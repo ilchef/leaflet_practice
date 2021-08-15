@@ -30,7 +30,7 @@ However I couldnt find any information online to back up that observation, so it
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r,message=FALSE,warning=FALSE,echo=false}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 library(leaflet)
 library(sf)
 library(downloader)
@@ -40,7 +40,7 @@ library(RColorBrewer)
 
 
 
-```{r,message=FALSE,warning=FALSE,echo=false}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 url <- "https://data.gov.au/dataset/0ed76b6e-4f6e-4cc6-9f95-0b4e3729dc69/resource/b50acd1e-5c0d-4260-8ebd-997fe97b7adb/download/asgs2017.gpkg"
 
 download(url, dest="dataset2017.gpkg", mode="wb") 
@@ -49,12 +49,12 @@ download(url, dest="dataset2017.gpkg", mode="wb")
 
 
 
-```{r,message=FALSE,warning=FALSE,echo=false}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 lga_data <- st_read("dataset2017.gpkg",layer = "local_government_area_2017")
 unlink("dataset2017.gpkg")
 ```
 
-```{r,message=FALSE,warning=FALSE,echo=false}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 library(readxl)
 
 url <- "https://www.abs.gov.au/statistics/people/population/regional-population-age-and-sex/2019/32350ds0004_2019.xls"
@@ -78,7 +78,7 @@ dss_payments <- read.csv("https://data.gov.au/data/dataset/8dc2eaa3-e052-43a4-80
 rm(pop_data)
 ```
 
-```{r,message=FALSE,warning=FALSE,echo=false}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 df <- lga_data %>%
         select(LGA_CODE_2017,LGA_NAME_2017) %>%
         mutate(LGA_CODE_2017 = as.character(LGA_CODE_2017))%>%
@@ -89,7 +89,7 @@ rm(list = c("dss_payments","lga_data"))
 ```
 
 
-```{r,message=FALSE,warning=FALSE,echo=false}
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
 #bins <- c(0,1000,2000,3000,4000,5000,10000,15000,20000,25000,30000,Inf)
 #pal <- colorBin("PuRd", domain = df$JobSeeker.Payment.percap,bins=bins)
 
@@ -128,7 +128,7 @@ I had a look at Jobseeker data around Australia in 2020.
 Results are very intuitive (regional areas and low socioeconomic areas have higher rates of Jobseeker).
 Jobkeeper would make an interesting supplementary visualisation, as it would feature more in large cities and tourism locations.
 
-```{r,echo=false}
+```{r,echo=FALSE}
 m1
 ```
 
