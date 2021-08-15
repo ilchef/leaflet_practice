@@ -49,7 +49,7 @@ download(url, dest="dataset2017.gpkg", mode="wb")
 
 
 
-```{r,message=FALSE,warning=FALSE,echo=FALSE}
+```{r,message=FALSE,warning=FALSE,echo=FALSE,results="hide"}
 lga_data <- st_read("dataset2017.gpkg",layer = "local_government_area_2017")
 unlink("dataset2017.gpkg")
 ```
@@ -131,4 +131,14 @@ Jobkeeper would make an interesting supplementary visualisation, as it would fea
 ```{r,echo=FALSE}
 m1
 ```
+
+### Disclaimer : the "people live in cities" effect
+
+![](peopleliveincities.jpg)
+_credit: xkcd_
+
+
+Chloropleths are sensitive to unbalanced data, particularly when different regions have vastly different populations (ie: above. Maralinga LGA has 64 people, Canterbury-Bankstown has 378k.)
+A lot of visualisations dont adjust for these very well, and the end result ends up just being a population map of the area. 
+Thats why I've presented jobkeeper as a % rather than a #.
 
