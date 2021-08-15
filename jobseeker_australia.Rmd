@@ -126,7 +126,7 @@ m1 <- leaflet(data=df) %>%
 ## Jobseeker Rate by LGA, 2020
 I had a look at Jobseeker data around Australia in 2020.
 Results are very intuitive (regional areas and low socioeconomic areas have higher rates of Jobseeker).
-Jobkeeper would make an interesting supplementary visualisation, as it would feature more in large cities and tourism spots.
+Jobkeeper would make an interesting supplementary visualisation, as it would feature more in large cities and tourism locations.
 
 ```{r,echo=false}
 m1

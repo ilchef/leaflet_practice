@@ -1,4 +1,20 @@
-## Welcome to GitHub Pages
+## Using Leaflet + htmltools for GIS analytics and visualisation
+
+R package
+
+#### Advantages Leaflet 
+* R is free*, Tableau is expensive         
+* Removes need for audience/end users to have tableau server access - flexible export options (html, github site, markdown, powerpoint/ms office, pdf, others).
+* Programmatic visualisation more flexible/customisable
+* Reproducibility
+* Enhanced possibilities for automation/interactivity (with shiny)
+
+#### Advantages Tableau
+* Many companies may have existing infrastructure in Tableau
+* Easier to learn, doesnt require coding background
+* Visualisations generally quicker to produce through click-and-drag
+
+
 
 You can use the [editor on GitHub](https://github.com/ilchef/leaflet_practice/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
