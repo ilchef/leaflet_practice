@@ -1,0 +1,116 @@
+---
+title: "Untitled"
+author: "Tom Ilchef"
+date: "07/08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+```{r}
+library(leaflet)
+library(sf)
+library(downloader)
+library(dplyr)
+library(RColorBrewer)
+```
+
+
+download and save gpkg data
+
+
+```{r}
+url <- "https://data.gov.au/dataset/0ed76b6e-4f6e-4cc6-9f95-0b4e3729dc69/resource/b50acd1e-5c0d-4260-8ebd-997fe97b7adb/download/asgs2017.gpkg"
+
+download(url, dest="dataset2017.gpkg", mode="wb") 
+
+```
+
+
+view ;layers
+```{r}
+st_layers("dataset2017.gpkg")
+```
+
+```{r}
+lga_data <- st_read("dataset2017.gpkg",layer = "local_government_area_2017")
+unlink("dataset2017.gpkg")
+```
+
+###############################################################################################
+```{r}
+library(readxl)
+
+url <- "https://www.abs.gov.au/statistics/people/population/regional-population-age-and-sex/2019/32350ds0004_2019.xls"
+download(url, dest="population.xls", mode="wb") 
+
+
+pop_data <- read_excel("population.xls"
+           , sheet = "Table 1"
+           , range = "C9:G552"
+           , col_names = c("LGA_code_2019","LGA_location","Males","Females","People")) %>%
+        select("LGA_code_2019","LGA_location","People") %>%
+        mutate(LGA_code_2019 = as.character(LGA_code_2019 ))
+
+dss_payments <- read.csv("https://data.gov.au/data/dataset/8dc2eaa3-e052-43a4-806b-91ca9306c346/resource/1cdccd05-80cd-46db-8d5a-933b4a4d129f/download/dss-demographics-march-2021-lga-csv-geo-au.csv") %>%
+        mutate(LGA_Code_2020 = as.character(LGA_Code_2020))%>%
+        left_join(pop_data
+                  , by = c("LGA_Code_2020"="LGA_code_2019")) %>%
+        mutate(JobSeeker.Payment.percap = case_when(People < 200 ~ NA_real_, TRUE ~ JobSeeker.Payment/People))
+
+
+rm(pop_data)
+```
+
+joining datasets
+```{r}
+df <- lga_data %>%
+        select(LGA_CODE_2017,LGA_NAME_2017) %>%
+        mutate(LGA_CODE_2017 = as.character(LGA_CODE_2017))%>%
+        left_join(dss_payments, by = c("LGA_CODE_2017"="LGA_Code_2020"))
+        #filter(!is.na(LGA_name_2020))
+
+rm(list = c("dss_payments","lga_data"))
+```
+
+
+```{r}
+#bins <- c(0,1000,2000,3000,4000,5000,10000,15000,20000,25000,30000,Inf)
+#pal <- colorBin("PuRd", domain = df$JobSeeker.Payment.percap,bins=bins)
+
+labels <- sprintf(
+  "<strong>%s LGA</strong><br/>%s%% Jobseeker / capita<br/>%g Population (2019)",
+  df$LGA_name_2020, format(round(df$JobSeeker.Payment.percap*100,2),nsmall=2), df$People
+) %>% lapply(htmltools::HTML)
+
+pal <- colorNumeric("PuRd", domain = df$JobSeeker.Payment.percap)
+
+m1 <- leaflet(data=df) %>%
+        #addTiles() %>%
+        leaflet::addPolygons(weight=1
+                             ,opacity=1
+                             ,color="white"
+                             ,dashArray = "3"
+                             ,fillColor = ~pal(JobSeeker.Payment.percap)
+                             ,fillOpacity = 0.7
+                             ,highlight = highlightOptions(
+                                        weight = 5,
+                                        color = "#666",
+                                        dashArray = "",
+                                        fillOpacity = 0.7,
+                                        bringToFront = TRUE)
+                             ,label = labels
+                             ,labelOptions = labelOptions(
+                                        style = list("font-weight" = "normal", padding = "3px 8px"),
+                                        textsize = "15px",
+                                        direction = "auto")
+                             )
+m1
+```
+
+
+
+
